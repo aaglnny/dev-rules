@@ -28,6 +28,37 @@
 
 只修改 XML 或资源时加载 `E:\rules\android\android-project.md` 和 `E:\rules\android\android-xml.md`，无需加载两份语言规范。
 
+## 完整示例加载路由
+
+完成基础规范加载后，根据当前任务追加读取对应的完整示例。只加载当前任务实际涉及的示例，不一次性读取整个 `examples` 目录：
+
+| 当前任务 | 必须读取的完整示例 |
+|---|---|
+| Java Activity | `E:\rules\android\examples\activity-java.md` |
+| Kotlin Activity | `E:\rules\android\examples\activity-kotlin.md` |
+| Java Fragment | `E:\rules\android\examples\fragment-java.md` |
+| Kotlin Fragment | `E:\rules\android\examples\fragment-kotlin.md` |
+| Java Adapter | `E:\rules\android\examples\adapter-java.md` |
+| Kotlin Adapter | `E:\rules\android\examples\adapter-kotlin.md` |
+| Entity、Dao、DatabaseManager | `E:\rules\android\examples\room-java.md` |
+| Java 数据库异步 | `E:\rules\android\examples\rxjava-java.md` |
+| Kotlin 数据库异步 | `E:\rules\android\examples\rxjava-kotlin.md` |
+| Java 自定义 Dialog | `E:\rules\android\examples\dialog-java.md` |
+| Kotlin 自定义 Dialog | `E:\rules\android\examples\dialog-kotlin.md` |
+
+同一任务涉及多个组件时，分别加载对应示例。例如 Kotlin Activity 同时包含 Room 数据库操作时，加载 `activity-kotlin.md`、`room-java.md` 和 `rxjava-kotlin.md`。
+
+## 完整示例使用规则
+
+- 开发对应组件前必须读取对应示例，不能只读取语言规范后自行推断代码结构。
+- 示例中的基类、组件职责、方法组织、生命周期位置、Binding 用法和核心调用方式属于结构约束。
+- 类名、包名、资源名、Entity、控件 ID、提示文本和具体业务字段属于可替换内容。
+- 示例用于约束代码形状，不得机械复制当前业务不需要的字段、监听、方法或依赖。
+- 编码前必须在当前模块中查找并读取至少一个职责最接近的真实文件，优先沿用其基类、import、构造签名、回调接口和方法节奏。
+- 如果当前项目无法找到公共基类源码，可只读检查 `E:\WorkSpace\zzz_base_demo_skills`；该项目无法提供基类源码时，再检查 `E:\WorkSpace\vtbbase\VtbBaseCommon`。
+- 上述两个参考项目仅用于核对公共 API 和稳定写法，不得修改，也不能把其中与当前需求无关的业务代码复制到目标项目。
+- 示例与目标项目真实代码冲突时，依次以编译和业务正确、目标项目真实基类、当前模块稳定写法、本规范、完整示例为准。
+
 规范之间发生冲突时，按以下顺序处理：
 
 1. 编译正确和业务正确
@@ -121,7 +152,7 @@
 - 使用基类提供的 `holder.setText()`、`holder.getTextView()`、`holder.getImageView()`、`holder.getView()` 等方法绑定数据。
 - 外部刷新数据使用 `adapter.addAllAndClear(list)`，不直接修改 Adapter 的 `mDatas`。
 - `convert()` 只负责列表展示、局部 UI 状态和按钮回调，不执行数据库、网络、页面跳转或复杂业务。
-- 整个 Item 的点击和长按使用基类的 `setOnItemClickLitener()`、`setOnLongItemClickLitener()`，监听在 Activity、Fragment 或 Dialog 外部设置。
+- 整个 Item 的点击和长按使用基类的 `setOnItemClickLitener()`、`setOnLongItemClickLitener()`，监听必须在 Activity、Fragment 或 Dialog 的 `bindEvent()` 中设置。
 - 不为整个 Item 重复定义点击接口，也不在 Adapter 构造方法中设置 Item 监听。
 - Item 内部有删除、编辑等按钮时，复用 `ButtonClickListener<T>`，或定义单一职责的专用接口；Adapter 只触发回调。
 

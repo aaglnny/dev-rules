@@ -65,13 +65,16 @@ import java.util.List;
 public interface XxxDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(XxxEntity... entities);
+    void insert(XxxEntity... beans);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(List<XxxEntity> list);
 
     @Query("SELECT * FROM XxxEntity ORDER BY id DESC")
     List<XxxEntity> queryAll();
+
+    @Query("SELECT COUNT(*) FROM XxxEntity")
+    int queryCount();
 
     @Query("SELECT * FROM XxxEntity WHERE id = :id")
     XxxEntity queryById(long id);
@@ -99,7 +102,7 @@ import com.xxx.project_name.entitys.XxxEntity;
 
 @Database(entities = {XxxEntity.class}, version = 1, exportSchema = false)
 public abstract class DatabaseManager extends RoomDatabase {
-    private static final String DB_NAME = "data.db";
+    public static final String DB_NAME = "data.db";
     private static volatile DatabaseManager instance;
 
     public static DatabaseManager getInstance(Context context) {
@@ -128,4 +131,3 @@ public abstract class DatabaseManager extends RoomDatabase {
 - [ ] SQL 表名是否与 Entity 类名一致。
 - [ ] Dao 是否没有返回 `Observable`、`Single` 或 `Completable`。
 - [ ] Room 注解处理器是否使用项目统一的 `annotationProcessor` 配置。
-

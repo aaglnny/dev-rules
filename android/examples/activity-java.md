@@ -26,11 +26,14 @@ import android.view.View;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.blankj.utilcode.util.SizeUtils;
 import com.xxx.project_name.R;
 import com.xxx.project_name.databinding.ActivityXxxBinding;
+import com.xxx.project_name.entitys.XxxEntity;
 import com.xxx.project_name.ui.adapter.XxxAdapter;
-import com.xxx.project_name.common.base.BaseActivity;
-import com.xxx.project_name.common.base.BasePresenter;
+import com.viterbi.common.base.BaseActivity;
+import com.viterbi.common.base.BasePresenter;
+import com.viterbi.common.widget.view.SimplePaddingDecoration;
 
 public class XxxActivity extends BaseActivity<ActivityXxxBinding, BasePresenter> {
     private XxxAdapter adapter;
@@ -47,6 +50,7 @@ public class XxxActivity extends BaseActivity<ActivityXxxBinding, BasePresenter>
 
         adapter = new XxxAdapter(this, null, R.layout.item_xxx);
         binding.rv.setLayoutManager(new LinearLayoutManager(this));
+        binding.rv.addItemDecoration(new SimplePaddingDecoration(mContext, SizeUtils.dp2px(0f)));
         binding.rv.setAdapter(adapter);
 
         getData();
@@ -55,6 +59,10 @@ public class XxxActivity extends BaseActivity<ActivityXxxBinding, BasePresenter>
     @Override
     public void bindEvent() {
         binding.setOnClickListener(this::onClickCallback);
+
+        adapter.setOnItemClickLitener((view, position, data) -> {
+            openDetail((XxxEntity) data);
+        });
     }
 
     @Override
@@ -71,6 +79,10 @@ public class XxxActivity extends BaseActivity<ActivityXxxBinding, BasePresenter>
         // 按当前页面的数据来源调用数据库或 Presenter。
     }
 
+    private void openDetail(XxxEntity entity) {
+        // 打开详情页或处理当前 Item。
+    }
+
     private void save() {
         // 先完成同步校验，再按项目异步规则保存。
     }
@@ -82,4 +94,5 @@ public class XxxActivity extends BaseActivity<ActivityXxxBinding, BasePresenter>
 - [ ] 是否保留 `setDataBindingLayout()` 和 Binding 访问。
 - [ ] 是否复用标题栏和项目已有 Presenter 基类。
 - [ ] 是否在 `initView()` 完成列表初始化并调用数据加载。
+- [ ] Item 点击和长按监听是否在 `bindEvent()` 中设置。
 - [ ] 是否没有把网络或数据库调用放进 Adapter。

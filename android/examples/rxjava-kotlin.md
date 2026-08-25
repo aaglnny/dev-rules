@@ -81,5 +81,4 @@ private fun save() {
 
 - [ ] 是否使用安全空值处理，不用 `!!`。
 - [ ] 是否没有使用 `Observable.just()` 直接包裹 Dao 调用。
-- [ ] 是否完成 IO 线程、主线程和 Disposable 管理。
-
+- [ ] 是否完成 IO 线程和主线程切换。

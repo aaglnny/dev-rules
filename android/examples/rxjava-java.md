@@ -85,5 +85,3 @@ private void save() {
 - [ ] 是否使用 `Observable.create()`，而不是 `Observable.just(dao.queryAll())`。
 - [ ] 是否设置 `subscribeOn(Schedulers.io())` 和主线程 `observeOn()`。
 - [ ] 异常是否通过 `onError()` 传递并恢复必要 UI 状态。
-- [ ] 页面销毁时是否沿用项目现有 Disposable 管理。
-

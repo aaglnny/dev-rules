@@ -7,11 +7,12 @@
 ```kotlin
 package com.xxx.project_name.ui.xxx
 
+import android.os.Bundle
 import android.view.View
 import com.xxx.project_name.R
-import com.xxx.project_name.common.base.BaseFragment
-import com.xxx.project_name.common.base.BasePresenter
 import com.xxx.project_name.databinding.FraXxxBinding
+import com.viterbi.common.base.BaseFragment
+import com.viterbi.common.base.BasePresenter
 
 class XxxFragment : BaseFragment<FraXxxBinding, BasePresenter>() {
 
@@ -55,6 +56,8 @@ class XxxFragment : BaseFragment<FraXxxBinding, BasePresenter>() {
 ## 带参数入口
 
 ```kotlin
+import android.os.Bundle
+
 companion object {
     private const val ARG_ID = "arg_id"
 
@@ -74,4 +77,3 @@ companion object {
 - [ ] 是否使用 `arguments` 而不是自定义构造参数。
 - [ ] 是否只在 Binding 有效时访问视图。
 - [ ] 异步回调是否避免对已脱离 Activity 的 Fragment 操作 UI。
-

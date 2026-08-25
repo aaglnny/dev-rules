@@ -8,6 +8,19 @@
 
 `dao`、`entitys` 包必须使用 Java，因此 Entity、Dao 和常用 `DatabaseManager` 的实现示例保留在本文件中。
 
+## Java 完整示例索引
+
+根据任务读取对应文件，不一次性加载全部示例：
+
+- Activity：`E:\rules\android\examples\activity-java.md`
+- Fragment：`E:\rules\android\examples\fragment-java.md`
+- Adapter：`E:\rules\android\examples\adapter-java.md`
+- Entity、Dao、DatabaseManager：`E:\rules\android\examples\room-java.md`
+- RxJava3 数据库异步：`E:\rules\android\examples\rxjava-java.md`
+- 自定义 Dialog：`E:\rules\android\examples\dialog-java.md`
+
+完整示例的强制程度、可替换范围和真实项目核对顺序统一遵守 [android-project.md](android-project.md) 中的“完整示例使用规则”。
+
 # Java 基础规则
 
 ## 版本与语法边界
@@ -207,6 +220,8 @@ public class XxxListAdapter extends BaseRecylerAdapter<XxxEntity> {
 ```
 
 设置基类 Item 监听：
+
+Item 监听统一放在页面的 `bindEvent()` 中，Adapter 初始化和 RecyclerView 绑定放在 `initView()` 中。
 
 ```java
 adapter.setOnItemClickLitener((view, position, data) -> {

@@ -14,12 +14,13 @@
 ```java
 package com.xxx.project_name.ui.xxx;
 
+import android.os.Bundle;
 import android.view.View;
 
 import com.xxx.project_name.R;
-import com.xxx.project_name.common.base.BaseFragment;
-import com.xxx.project_name.common.base.BasePresenter;
 import com.xxx.project_name.databinding.FraXxxBinding;
+import com.viterbi.common.base.BaseFragment;
+import com.viterbi.common.base.BasePresenter;
 
 public class XxxFragment extends BaseFragment<FraXxxBinding, BasePresenter> {
 
@@ -66,6 +67,8 @@ public class XxxFragment extends BaseFragment<FraXxxBinding, BasePresenter> {
 ## 带参数入口
 
 ```java
+import android.os.Bundle;
+
 private static final String ARG_ID = "arg_id";
 
 public static XxxFragment newInstance(long id) {
@@ -82,4 +85,3 @@ public static XxxFragment newInstance(long id) {
 - [ ] 是否没有定义带业务参数的自定义构造方法。
 - [ ] 异步回调中是否确认 Fragment 仍处于有效生命周期。
 - [ ] 是否没有在 `onDestroyView()` 后访问 Binding。
-

@@ -11,8 +11,9 @@ import android.content.Context
 import android.view.View
 import com.bumptech.glide.Glide
 import com.xxx.project_name.R
-import com.xxx.project_name.common.base.BaseRecylerAdapter
 import com.xxx.project_name.entitys.XxxEntity
+import com.viterbi.common.base.BaseRecylerAdapter
+import com.viterbi.common.base.MyRecylerViewHolder
 
 class XxxAdapter(
     private val context: Context,
@@ -20,9 +21,11 @@ class XxxAdapter(
     layoutId: Int
 ) : BaseRecylerAdapter<XxxEntity>(context, list, layoutId) {
 
-    private var buttonClickListener: ButtonClickListener<XxxEntity>? = null
+    private var buttonClickListener: BaseRecylerAdapter.ButtonClickListener<XxxEntity>? = null
 
-    fun setButtonClickListener(listener: ButtonClickListener<XxxEntity>?) {
+    fun setButtonClickListener(
+        listener: BaseRecylerAdapter.ButtonClickListener<XxxEntity>?
+    ) {
         buttonClickListener = listener
     }
 
@@ -41,7 +44,7 @@ class XxxAdapter(
 }
 ```
 
-## 外部设置监听
+## 页面 `bindEvent()` 中设置监听
 
 ```kotlin
 adapter.setOnItemClickLitener { _, position, data ->
@@ -53,6 +56,8 @@ adapter.setOnLongItemClickLitener { _, position ->
     showDeleteDialog(adapter.getItem(position))
 }
 ```
+
+Adapter 初始化和 RecyclerView 绑定放在 `initView()`，Item 点击和长按监听放在页面的 `bindEvent()`。
 
 ## 实施检查
 

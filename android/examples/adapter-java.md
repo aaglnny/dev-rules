@@ -19,14 +19,15 @@ import android.view.View;
 
 import com.bumptech.glide.Glide;
 import com.xxx.project_name.R;
-import com.xxx.project_name.common.base.BaseRecylerAdapter;
 import com.xxx.project_name.entitys.XxxEntity;
+import com.viterbi.common.base.BaseRecylerAdapter;
+import com.viterbi.common.base.MyRecylerViewHolder;
 
 import java.util.List;
 
 public class XxxAdapter extends BaseRecylerAdapter<XxxEntity> {
     private final Context context;
-    private ButtonClickListener<XxxEntity> buttonClickListener;
+    private BaseRecylerAdapter.ButtonClickListener<XxxEntity> buttonClickListener;
 
     public XxxAdapter(Context context, List<XxxEntity> list, int layoutId) {
         super(context, list, layoutId);
@@ -34,7 +35,7 @@ public class XxxAdapter extends BaseRecylerAdapter<XxxEntity> {
     }
 
     public void setButtonClickListener(
-            ButtonClickListener<XxxEntity> buttonClickListener) {
+            BaseRecylerAdapter.ButtonClickListener<XxxEntity> buttonClickListener) {
         this.buttonClickListener = buttonClickListener;
     }
 
@@ -57,7 +58,7 @@ public class XxxAdapter extends BaseRecylerAdapter<XxxEntity> {
 }
 ```
 
-## 外部设置监听
+## 页面 `bindEvent()` 中设置监听
 
 ```java
 adapter.setOnItemClickLitener((view, position, data) -> {
@@ -70,9 +71,10 @@ adapter.setOnLongItemClickLitener((view, position) -> {
 });
 ```
 
+Adapter 初始化和 RecyclerView 绑定放在 `initView()`，Item 点击和长按监听放在页面的 `bindEvent()`。
+
 ## 实施检查
 
 - [ ] 是否设置了 `LayoutManager` 后再绑定 Adapter。
 - [ ] 是否没有直接修改 `mDatas`。
 - [ ] 是否没有在 `convert()` 内执行异步业务。
-

@@ -23,11 +23,14 @@ package com.xxx.project_name.ui.xxx
 import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.blankj.utilcode.util.SizeUtils
 import com.xxx.project_name.R
-import com.xxx.project_name.common.base.BaseActivity
-import com.xxx.project_name.common.base.BasePresenter
 import com.xxx.project_name.databinding.ActivityXxxBinding
+import com.xxx.project_name.entitys.XxxEntity
 import com.xxx.project_name.ui.adapter.XxxAdapter
+import com.viterbi.common.base.BaseActivity
+import com.viterbi.common.base.BasePresenter
+import com.viterbi.common.widget.view.SimplePaddingDecoration
 
 class XxxActivity : BaseActivity<ActivityXxxBinding, BasePresenter>() {
 
@@ -43,6 +46,7 @@ class XxxActivity : BaseActivity<ActivityXxxBinding, BasePresenter>() {
 
         adapter = XxxAdapter(this, null, R.layout.item_xxx)
         binding.rv.layoutManager = LinearLayoutManager(this)
+        binding.rv.addItemDecoration(SimplePaddingDecoration(mContext, SizeUtils.dp2px(0f)))
         binding.rv.adapter = adapter
 
         getData()
@@ -50,6 +54,10 @@ class XxxActivity : BaseActivity<ActivityXxxBinding, BasePresenter>() {
 
     override fun bindEvent() {
         binding.setOnClickListener(this::onClickCallback)
+
+        adapter.setOnItemClickLitener { _, _, entity ->
+            openDetail(entity as XxxEntity)
+        }
     }
 
     override fun onClickCallback(view: View) {
@@ -67,6 +75,10 @@ class XxxActivity : BaseActivity<ActivityXxxBinding, BasePresenter>() {
         // 按当前页面的数据来源调用数据库或 Presenter。
     }
 
+    private fun openDetail(entity: XxxEntity) {
+        // 打开详情页或处理当前 Item。
+    }
+
     private fun save() {
         // 先完成同步校验，再按项目异步规则保存。
     }
@@ -77,6 +89,6 @@ class XxxActivity : BaseActivity<ActivityXxxBinding, BasePresenter>() {
 
 - [ ] 是否使用项目现有 `BaseActivity` 和 `binding`。
 - [ ] 是否在 `initView()` 初始化列表并调用 `getData()`。
+- [ ] Item 点击和长按监听是否在 `bindEvent()` 中注册。
 - [ ] 是否避免无意义的扩展函数和作用域函数链。
 - [ ] 是否没有使用 `!!` 或绕过 Presenter 直接请求网络。
-

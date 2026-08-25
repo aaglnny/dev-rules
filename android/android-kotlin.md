@@ -8,6 +8,19 @@
 
 `dao`、`entitys` 包必须使用 Java，其实现示例读取 [android-java.md](android-java.md)，不得在本文件中复制一套 Kotlin Entity 或 Dao 示例。
 
+## Kotlin 完整示例索引
+
+根据任务读取对应文件，不一次性加载全部示例：
+
+- Activity：`E:\rules\android\examples\activity-kotlin.md`
+- Fragment：`E:\rules\android\examples\fragment-kotlin.md`
+- Adapter：`E:\rules\android\examples\adapter-kotlin.md`
+- Room 的 Java Entity、Dao 和 DatabaseManager：`E:\rules\android\examples\room-java.md`
+- RxJava3 数据库异步：`E:\rules\android\examples\rxjava-kotlin.md`
+- 自定义 Dialog：`E:\rules\android\examples\dialog-kotlin.md`
+
+完整示例的强制程度、可替换范围和真实项目核对顺序统一遵守 [android-project.md](android-project.md) 中的“完整示例使用规则”。
+
 # Kotlin 基础规则
 
 ## 版本与语法边界
@@ -295,6 +308,8 @@ class XxxListAdapter(
 ```
 
 设置基类 Item 监听：
+
+Item 监听统一放在页面的 `bindEvent()` 中，Adapter 初始化和 RecyclerView 绑定放在 `initView()` 中。
 
 ```kotlin
 adapter.setOnItemClickLitener { _, position, data ->
