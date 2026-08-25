@@ -45,6 +45,10 @@
 | Kotlin 数据库异步 | `E:\rules\android\examples\rxjava-kotlin.md` |
 | Java 自定义 Dialog | `E:\rules\android\examples\dialog-java.md` |
 | Kotlin 自定义 Dialog | `E:\rules\android\examples\dialog-kotlin.md` |
+| Activity XML | `E:\rules\android\examples\activity-xml.md` |
+| Fragment XML | `E:\rules\android\examples\fragment-xml.md` |
+| RecyclerView Item XML | `E:\rules\android\examples\item-xml.md` |
+| Dialog XML | `E:\rules\android\examples\dialog-xml.md` |
 
 同一任务涉及多个组件时，分别加载对应示例。例如 Kotlin Activity 同时包含 Room 数据库操作时，加载 `activity-kotlin.md`、`room-java.md` 和 `rxjava-kotlin.md`。
 

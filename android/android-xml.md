@@ -9,6 +9,17 @@
 - Java 调用示例读取 [android-java.md](android-java.md)。
 - 页面、控件、布局和资源实现优先参考项目中已经调整完成的同类页面，不自行套用通用模板。
 
+## XML 完整示例索引
+
+根据当前布局类型读取对应文件，不一次性加载全部示例：
+
+- Activity：`E:\rules\android\examples\activity-xml.md`
+- Fragment：`E:\rules\android\examples\fragment-xml.md`
+- RecyclerView Item：`E:\rules\android\examples\item-xml.md`
+- Dialog：`E:\rules\android\examples\dialog-xml.md`
+
+完整布局示例只维护在 `examples` 目录。本文件保留 XML 规则和局部属性示例，不再复制完整页面布局。
+
 # DataBinding 与 ViewBinding XML
 
 ## DataBinding 根结构
@@ -101,45 +112,7 @@
 - 容器不随意固定高度或设置统一外边距，间距按设计由对应直接子控件承担。
 - 所有布局实现以 KISS 为原则，只保留当前页面真正需要的层级、属性和代码，不主动增加预防性配置。
 
-# Activity 布局示例
-
-```xml
-<?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <data>
-
-        <variable
-            name="onClickListener"
-            type="android.view.View.OnClickListener" />
-
-    </data>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/base_bg_color">
-
-        <include
-            android:id="@+id/include"
-            layout="@layout/layout_title_bar"
-            android:onClickListener="@{onClickListener}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/include" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</layout>
-```
+# 常用控件属性示例
 
 任意可点击文本：
 
@@ -257,57 +230,6 @@
 </RadioGroup>
 ```
 
-# Dialog 布局示例
+# Dialog 布局
 
-Dialog 类实现读取对应语言规范。布局文件命名为 `dialog_xxx.xml`，存放在 `res/layout/dialog/layout/`：
-
-```xml
-<?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <data>
-
-        <variable
-            name="onClickListener"
-            type="android.view.View.OnClickListener" />
-
-    </data>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/shape_dialog_bg">
-
-        <ImageView
-            android:id="@+id/iv_close"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClickListener="@{onClickListener}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/tv_option_1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClickListener="@{onClickListener}"
-            android:text="选项一"
-            android:textColor="@color/base_text_color"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/tv_option_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClickListener="@{onClickListener}"
-            android:text="选项二"
-            android:textColor="@color/base_text_color"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</layout>
-```
+Dialog 布局文件命名为 `dialog_xxx.xml`，存放在 `res/layout/dialog/layout/`。完整布局读取 `E:\rules\android\examples\dialog-xml.md`，Dialog 类读取对应 Java 或 Kotlin 示例。
