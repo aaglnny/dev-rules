@@ -131,3 +131,5 @@ public abstract class DatabaseManager extends RoomDatabase {
 - [ ] SQL 表名是否与 Entity 类名一致。
 - [ ] Dao 是否没有返回 `Observable`、`Single` 或 `Completable`。
 - [ ] Room 注解处理器是否使用项目统一的 `annotationProcessor` 配置。
+- [ ] `@Database` 是否保持当前 `version` 不变，且没有新增 `Migration`、`addMigrations()` 或 `fallbackToDestructiveMigration()`。
+- [ ] 数据结构变化后是否通过卸载 App 或清除应用数据重新安装验证。

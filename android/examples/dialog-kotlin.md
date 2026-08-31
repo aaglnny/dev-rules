@@ -34,19 +34,19 @@ class XxxSelectDialog(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val dialogWindow = window ?: return
-        dialogWindow.setSoftInputMode(
+        val window = window ?: return
+        window.setSoftInputMode(
             WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE or
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN
         )
-        dialogWindow.setGravity(Gravity.CENTER)
-        dialogWindow.decorView.setPadding(0, 0, 0, 0)
-        dialogWindow.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialogWindow.requestFeature(Window.FEATURE_NO_TITLE)
+        window.setGravity(Gravity.CENTER)
+        window.decorView.setPadding(0, 0, 0, 0)
+        window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        window.requestFeature(Window.FEATURE_NO_TITLE)
 
-        val params = dialogWindow.attributes
+        val params = window.attributes
         params.width = ScreenUtils.getScreenWidth() - SizeUtils.dp2px(60f)
-        dialogWindow.attributes = params
+        window.attributes = params
 
         binding = DataBindingUtil.inflate(
             LayoutInflater.from(context),

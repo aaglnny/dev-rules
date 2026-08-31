@@ -192,8 +192,10 @@
 
 ## Room 配置
 
-- 开发阶段数据结构变更可卸载 App 清除旧数据后重新安装，不强制处理 Migration。
-- 用户明确要求保留线上数据、升级正式数据库版本或提供发布迁移方案时，必须实现并验证 Migration。
+- 当前项目处于开发阶段，禁止升级数据库，`@Database` 保持当前 `version` 不变。
+- 禁止创建 `Migration`、调用 `addMigrations()` 或使用 `fallbackToDestructiveMigration()` 等数据库升级处理。
+- Entity、字段、索引或表结构发生变化后，必须卸载 App 或清除应用数据，再重新安装进行验证。
+- 如果后续项目进入正式发布阶段并需要保留已有数据，必须先由用户明确调整本规则，不能自行设计或实现数据库升级方案。
 - Java/Kotlin 混合模块的 Room 注解处理器统一使用 `annotationProcessor androidApi.library.roomprocessor`，不使用 kapt 处理 Room 注解。
 - Room 相关依赖统一使用项目 `androidApi` 配置：
 

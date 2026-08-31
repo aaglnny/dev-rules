@@ -39,21 +39,19 @@ public class XxxSelectDialog extends Dialog {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Window dialogWindow = getWindow();
-        if (dialogWindow == null) {
+        Window window = getWindow();
+        if (window == null) {
             return;
         }
-        dialogWindow.setSoftInputMode(
-                WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
-                        | WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-        dialogWindow.setGravity(Gravity.CENTER);
-        dialogWindow.getDecorView().setPadding(0, 0, 0, 0);
-        dialogWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialogWindow.requestFeature(Window.FEATURE_NO_TITLE);
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE | WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        window.setGravity(Gravity.CENTER);
+        window.getDecorView().setPadding(0, 0, 0, 0);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        window.requestFeature(Window.FEATURE_NO_TITLE);
 
-        WindowManager.LayoutParams params = dialogWindow.getAttributes();
-        params.width = ScreenUtils.getScreenWidth() - SizeUtils.dp2px(60f);
-        dialogWindow.setAttributes(params);
+        WindowManager.LayoutParams params = window.getAttributes();
+        params.width = ScreenUtils.getScreenWidth() - SizeUtils.dp2px(40f);
+        window.setAttributes(params);
 
         binding = DataBindingUtil.inflate(
                 LayoutInflater.from(getContext()),

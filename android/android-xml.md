@@ -25,7 +25,8 @@
 ## DataBinding 根结构
 
 - DataBinding 布局根标签使用 `<layout>`。
-- `<data>` 只声明当前布局实际使用的变量，不添加预防性变量。
+- 新创建的 XML 布局文件中，`<data>` 只能声明 `onClickListener`，禁止添加 Entity、ViewModel、状态值、文本等其他 `<variable>`。
+- 布局不需要点击监听时，`<data>` 中不声明任何 `<variable>`。
 - 点击事件统一声明 `onClickListener`，代码侧使用 Binding 生成的 setter；具体调用语法见对应语言规范。
 
 ```xml
@@ -74,6 +75,8 @@
 - 资源 ID 使用带控件类型前缀的小写下划线命名，例如 `tv_name`、`et_name`、`iv_icon`、`rv_list`。
 - 布局内部的 ID 根据局部上下文简洁命名，不重复添加布局文件名已经表达的业务前缀。
 - 图标以 `ic_` 开头，避免重复添加页面名和 `icon` 等冗余词。
+- PNG、JPG、WEBP 等图片格式的图标统一存放在 `res/mipmap-xxhdpi/`。
+- XML 格式的图标资源统一存放在 `res/drawable/`。
 - 大插图可使用 `_art` 后缀区分。
 - `res` 下的资源文件名默认只表达资源自身用途，不添加页面、模块等业务名称。
 - 例如进度背景命名为 `shape_progress`，不要命名为 `shape_home_progress`。
@@ -100,7 +103,7 @@
 - 布局属性遵循最小化原则。没有明确裁剪、越界绘制或 padding 绘制需求时，禁止主动添加 `clipChildren`、`clipToPadding`；`rowCount`、`useDefaultMargins`、`alignmentMode` 等属性也只在实际需要时设置。
 - `ConstraintLayout` 的直接子节点自行设置外边距和约束；内部子节点只负责自身内容间距，禁止通过额外父布局重复传递边距。
 - `GridLayout` 子项明确设置 `layout_row`、`layout_column`、`layout_columnWeight` 和必要边距。宽度使用 `0dp` 配合权重，禁止复制多套相同 View 结构。
-- `GridLayout` 中重复出现的 View 必须提取到 `res/layout/view/layout/` 下的独立布局，通过 `include` 复用。
+- `GridLayout` 中由多个 View 组成且重复出现的结构，必须提取到 `res/layout/view/layout/` 下的独立布局，通过 `include` 复用；一个 View 即可完成的布局不需要提取独立布局。
 - 被复用布局只保留公共视觉结构；行列、权重、边距、ID 和点击监听由主布局中的 `include` 设置。
 - `include` 需要点击时，直接在 `include` 标签设置 `android:onClickListener="@{onClickListener}"`，禁止在被 include 的布局中重复声明点击变量或设置点击监听。
 - 各 include 的差异内容统一由页面通过 Binding 设置，禁止为了不同文字或图标复制布局，也禁止依赖 `findViewById()`。
