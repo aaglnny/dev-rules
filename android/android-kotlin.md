@@ -14,7 +14,7 @@
 - Fragment：`E:\rules\android\examples\fragment-kotlin.md`
 - Adapter：`E:\rules\android\examples\adapter-kotlin.md`
 - Room 的 Java Entity、Dao 和 DatabaseManager：`E:\rules\android\examples\room-java.md`
-- RxJava3 数据库异步：`E:\rules\android\examples\rxjava-kotlin.md`
+- 协程数据库异步：`E:\rules\android\examples\coroutine-kotlin.md`
 - 自定义 Dialog：`E:\rules\android\examples\dialog-kotlin.md`
 
 完整示例的强制程度、可替换范围和真实项目核对顺序遵守 [android-project.md](android-project.md) 中的“完整示例使用规则”。
@@ -26,7 +26,7 @@
 - Kotlin 版本以项目根目录配置为准，当前项目使用 Kotlin `1.6.21` 和 JVM `1.8`。
 - 不在普通需求中擅自升级 Kotlin 或 JVM 版本。
 - 只使用当前版本和项目依赖能够稳定支持的语法。
-- 不因为使用 Kotlin 就主动引入新的架构、异步框架或 Kotlin 扩展库。
+- Kotlin 异步统一使用项目已有协程依赖，不引入 RxJava3 或其他新的异步框架。
 
 ## `val`、属性与集合
 
@@ -117,13 +117,16 @@ when (view.id) {
 - `setOnItemClickLitener()`、`setOnLongItemClickLitener()` 及 Item 内按钮监听的页面侧设置放在 `bindEvent()`。
 - Adapter 内部只负责展示和触发回调，不执行页面跳转、数据库或网络业务。
 
-## Room 与 RxJava3
+## Room 与协程
 
 - Entity、Dao 和 `DatabaseManager` 的完整写法读取 `room-java.md`。
-- 查询、保存和删除的完整写法读取 `rxjava-kotlin.md`。
-- Dao 返回普通类型，不返回 RxJava 类型。
-- 使用 `Observable.create()` 延迟执行 Dao，不使用 `Observable.just(dao.queryAll())`。
-- 数据库操作在 `Schedulers.io()` 执行，UI 更新切换到主线程。
+- 查询、保存和删除的完整写法读取 `coroutine-kotlin.md`。
+- Dao 返回普通类型，不返回 RxJava、协程或 Flow 类型。
+- Activity 使用 `lifecycleScope`，Fragment 更新 Binding 时使用 `viewLifecycleOwner.lifecycleScope`。
+- Dao 操作使用 `withContext(Dispatchers.IO)`，返回生命周期协程的主线程后更新 UI。
+- 禁止使用 `GlobalScope`，禁止在页面中创建脱离生命周期的自定义 `CoroutineScope`。
+- 捕获 `Exception` 前单独捕获并重新抛出 `CancellationException`，避免把生命周期取消显示为操作失败。
+- Kotlin 文件禁止使用 `Observable`、`Single`、`Maybe`、`Completable`、`Disposable`、`Schedulers` 和 `AndroidSchedulers`。
 
 ## Toast、确认弹窗和图片
 
@@ -143,6 +146,8 @@ Glide.with(context)
 
 - 网络页面使用对应 Contract 的 Presenter，并实现 View 接口。
 - Presenter 在 `initView()` 中按当前模块方式初始化并发起请求。
+- Kotlin 网络异步统一使用协程和 Retrofit `suspend` 接口，不使用 RxJava3 返回类型或订阅。
+- 协程作用域必须与页面或 Presenter 生命周期绑定，禁止使用 `GlobalScope`。
 - Gson 泛型解析使用匿名 `TypeToken`。
 - 编码前必须读取当前模块中一个真实的 Presenter 页面。
 

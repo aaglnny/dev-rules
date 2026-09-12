@@ -41,8 +41,8 @@
 | Java Adapter | `E:\rules\android\examples\adapter-java.md` |
 | Kotlin Adapter | `E:\rules\android\examples\adapter-kotlin.md` |
 | Entity、Dao、DatabaseManager | `E:\rules\android\examples\room-java.md` |
-| Java 数据库异步 | `E:\rules\android\examples\rxjava-java.md` |
-| Kotlin 数据库异步 | `E:\rules\android\examples\rxjava-kotlin.md` |
+| Java 数据库异步（RxJava3） | `E:\rules\android\examples\rxjava-java.md` |
+| Kotlin 数据库异步（协程） | `E:\rules\android\examples\coroutine-kotlin.md` |
 | Java 自定义 Dialog | `E:\rules\android\examples\dialog-java.md` |
 | Kotlin 自定义 Dialog | `E:\rules\android\examples\dialog-kotlin.md` |
 | Activity XML | `E:\rules\android\examples\activity-xml.md` |
@@ -50,7 +50,7 @@
 | RecyclerView Item XML | `E:\rules\android\examples\item-xml.md` |
 | Dialog XML | `E:\rules\android\examples\dialog-xml.md` |
 
-同一任务涉及多个组件时，分别加载对应示例。例如 Kotlin Activity 同时包含 Room 数据库操作时，加载 `activity-kotlin.md`、`room-java.md` 和 `rxjava-kotlin.md`。
+同一任务涉及多个组件时，分别加载对应示例。例如 Kotlin Activity 同时包含 Room 数据库操作时，加载 `activity-kotlin.md`、`room-java.md` 和 `coroutine-kotlin.md`。
 
 ## 完整示例使用规则
 
@@ -102,10 +102,11 @@
 
 # 项目环境与技术边界
 
-这是一个 Android Java/Kotlin 混合项目。继续使用项目已有的 DataBinding/ViewBinding、Room、RecyclerView、Presenter、RxJava3、Glide、Android 原生 Dialog，以及现有 `BaseActivity`、`BaseFragment`、`BaseRecylerAdapter`、`SimpleObserver` 等公共能力。
+这是一个 Android Java/Kotlin 混合项目。继续使用项目已有的 DataBinding/ViewBinding、Room、RecyclerView、Presenter、Glide、Android 原生 Dialog，以及现有 `BaseActivity`、`BaseFragment`、`BaseRecylerAdapter` 等公共能力。Java 异步继续使用 RxJava3 和 `SimpleObserver`，Kotlin 异步统一使用协程。
 
 - 不因为新增 Kotlin 代码就自动引入 Compose、Flow、Hilt、Navigation、MVI 等框架。
-- 只有目标模块已经使用协程，或用户明确要求时，才使用协程完成对应功能。
+- Kotlin 文件禁止新增 RxJava3 的 `Observable`、`Single`、`Maybe`、`Completable`、`Disposable` 或线程调度代码，数据库和网络异步统一使用协程。
+- 现有 Java 文件及 Java Presenter 保持 RxJava3，不因 Kotlin 使用协程而迁移或重写。
 - 不改变现有业务架构、基类体系、资源组织方式和组件选型，除非需求明确要求。
 
 # 文件语言边界
@@ -203,31 +204,45 @@
 implementation androidApi.library.room
 annotationProcessor androidApi.library.roomprocessor
 implementation androidApi.library.roomRxjava3
+implementation androidApi.library.lifecycleruntime
+implementation androidApi.library.kotlincoroutines
 ```
+
+- `roomRxjava3` 仅供 Java 的 RxJava3 调用链使用；Kotlin 数据库异步使用协程，不直接使用 Room RxJava3 返回类型。
+- `lifecycleruntime` 和 `kotlincoroutines` 用于 Kotlin 生命周期协程及 Android 主线程调度。
 
 - `@Database` 的 `entities` 包含全部 Room Entity，并为每个 Dao 提供抽象 getter。
 - `DatabaseManager` 使用线程安全单例，并使用 Application Context 创建数据库。
-- 当前项目允许保留 `allowMainThreadQueries()` 配置，但业务代码仍必须按本规范使用 RxJava3 在 IO 线程执行数据库操作。
+- 当前项目允许保留 `allowMainThreadQueries()` 配置，但业务代码仍必须在后台线程执行数据库操作：Java 使用 RxJava3 的 `Schedulers.io()`，Kotlin 使用 `withContext(Dispatchers.IO)`。
 - Java `DatabaseManager` 示例见 [android-java.md](android-java.md)。
 
-# 数据库与 RxJava3 异步规则
+# 数据库异步规则
 
-数据库操作统一采用以下方式：
+## 公共要求
 
-1. Dao 只暴露普通返回类型。
-2. 调用层使用 `Observable.create()` 包裹 Dao 操作。
-3. 使用 `subscribeOn(Schedulers.io())` 执行数据库操作。
-4. 使用 `observeOn(AndroidSchedulers.mainThread())` 更新 UI。
-5. 捕获数据库异常并传递给 `onError()`，向用户展示友好提示。
-6. 成功路径正确发送 `onNext()` 和 `onComplete()`，保存、删除等无业务返回值操作使用对应语言的空结果类型。
+- Dao 只暴露普通返回类型，不返回 RxJava、协程或 Flow 类型。
+- 不在主线程直接调用 Dao，也不在 Dao 内部切换线程。
+- 数据库异常只向用户展示友好提示，不展示堆栈或内部信息。
+- Java 和 Kotlin 各自使用本节指定的异步方式，禁止在同一个调用链中混用 RxJava3 和协程。
 
-补充要求：
+## Java 使用 RxJava3
 
-- 不在主线程直接调用 Dao。
-- 不在 Dao 内部切换线程。
+- 调用层使用 `Observable.create()` 延迟执行 Dao 操作。
+- 使用 `subscribeOn(Schedulers.io())` 执行数据库操作。
+- 使用 `observeOn(AndroidSchedulers.mainThread())` 更新 UI。
+- 捕获数据库异常并传递给 `onError()`。
 - 不使用 `Observable.just(dao.queryAll())`，因为 Dao 会在创建 Observable 时立即执行。
 - 页面销毁后的订阅管理沿用项目现有方式；基类已管理 Disposable 时必须复用。
-- 查询、保存和删除的完整实现见对应语言规范。
+- 查询、保存和删除的完整实现见 `examples/rxjava-java.md`。
+
+## Kotlin 使用协程
+
+- Kotlin 调用层使用生命周期作用域启动协程，不使用 RxJava3。
+- Activity 使用 `lifecycleScope`；Fragment 更新 Binding 时使用 `viewLifecycleOwner.lifecycleScope`。
+- 使用 `withContext(Dispatchers.IO)` 执行 Dao 操作，协程返回主线程后更新 UI。
+- 禁止使用 `GlobalScope`，禁止为普通页面创建脱离生命周期的自定义 `CoroutineScope`。
+- 捕获业务异常时必须让 `CancellationException` 继续抛出，不能把协程取消当成业务失败提示。
+- 查询、保存和删除的完整实现见 `examples/coroutine-kotlin.md`。
 
 # 工具类与通用组件
 
@@ -251,6 +266,9 @@ implementation androidApi.library.roomRxjava3
 - 继续使用项目现有 Presenter 模式，不在 Activity 或 Fragment 中绕过 Presenter 直接创建 Retrofit 请求。
 - 网络页面使用对应 Contract 的 Presenter，并实现 View 接口。
 - Presenter 在 `initView()` 中按项目方式初始化并发起请求。
+- Java 网络异步继续使用项目现有 RxJava3 调用链。
+- Kotlin 网络异步统一使用协程和 `suspend` 接口，禁止新增 RxJava3 类型、订阅或线程调度代码。
+- Kotlin 协程作用域必须与页面或 Presenter 生命周期绑定，禁止使用 `GlobalScope`。
 - Gson 泛型解析使用对应语言的匿名 `TypeToken`。
 - 网络错误提示和 Loading 显隐复用现有基类。
 - 成功回调中不执行复杂耗时计算；耗时逻辑切换到后台线程。
@@ -298,7 +316,7 @@ implementation androidApi.library.roomRxjava3
 
 ## 错误处理
 
-- 数据库异常在异步源中捕获并传递给观察者，不直接向用户展示堆栈或敏感内部信息。
+- 数据库异常由 Java RxJava3 的 `onError()` 或 Kotlin 协程的异常处理分支接收，不直接向用户展示堆栈或敏感内部信息。
 - 文件读写、Bitmap 转换和第三方图片处理只包住实际可能失败的操作，不用大范围 `try/catch` 包裹整个页面方法。
 - 失败后恢复必要 UI 状态，例如关闭 Loading，不返回伪造成功结果。
 - 项目内部可控数据不层层捕获异常；能用类型和明确分支表达时不使用异常。
@@ -310,9 +328,11 @@ implementation androidApi.library.roomRxjava3
 - Kotlin
 - DataBinding / ViewBinding
 - RecyclerView
-- Room + Room RxJava3
+- Room
+- Java：RxJava3、RxAndroid3、Room RxJava3
+- Kotlin：Kotlin Coroutines、Lifecycle Runtime KTX
 - Glide
-- Retrofit + RxJava3
+- Retrofit
 - Gson
 - AndroidUtilCode
 - Android 原生 Dialog

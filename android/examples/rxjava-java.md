@@ -7,16 +7,11 @@ Dao 保持同步普通返回类型，调用层使用 `Observable.create()` 包�
 ```java
 private void getData() {
     Observable.create((ObservableOnSubscribe<List<XxxEntity>>) emitter -> {
-                try {
-                    List<XxxEntity> list = DatabaseManager
-                            .getInstance(getApplicationContext())
-                            .getXxxDao()
-                            .queryAll();
-                    emitter.onNext(list);
-                    emitter.onComplete();
-                } catch (Exception e) {
-                    emitter.tryOnError(e);
-                }
+                List<XxxEntity> list = DatabaseManager
+                        .getInstance(getApplicationContext())
+                        .getXxxDao()
+                        .queryAll();
+                emitter.onNext(list);
             })
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -51,16 +46,11 @@ private void save() {
     entity.setName(name);
 
     Observable.create((ObservableOnSubscribe<Boolean>) emitter -> {
-                try {
-                    DatabaseManager
-                            .getInstance(getApplicationContext())
-                            .getXxxDao()
-                            .insert(entity);
-                    emitter.onNext(Boolean.TRUE);
-                    emitter.onComplete();
-                } catch (Exception e) {
-                    emitter.tryOnError(e);
-                }
+                DatabaseManager
+                        .getInstance(getApplicationContext())
+                        .getXxxDao()
+                        .insert(entity);
+                emitter.onNext(Boolean.TRUE);
             })
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

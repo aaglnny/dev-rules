@@ -103,22 +103,28 @@ import com.xxx.project_name.entitys.XxxEntity;
 @Database(entities = {XxxEntity.class}, version = 1, exportSchema = false)
 public abstract class DatabaseManager extends RoomDatabase {
     public static final String DB_NAME = "data.db";
-    private static volatile DatabaseManager instance;
+
+    private volatile static DatabaseManager instance;
+
 
     public static DatabaseManager getInstance(Context context) {
         if (instance == null) {
             synchronized (DatabaseManager.class) {
                 if (instance == null) {
-                    instance = Room.databaseBuilder(
-                                    context.getApplicationContext(),
-                                    DatabaseManager.class,
-                                    DB_NAME)
-                            .allowMainThreadQueries()
-                            .build();
+                    instance = DatabaseManager.create(context);
                 }
             }
         }
         return instance;
+    }
+
+    private static DatabaseManager create(final Context context) {
+        return Room.databaseBuilder(
+                context.getApplicationContext(),
+                DatabaseManager.class
+                        , DB_NAME)
+                .allowMainThreadQueries()
+                .build();
     }
 
     public abstract XxxDao getXxxDao();
