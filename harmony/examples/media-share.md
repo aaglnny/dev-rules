@@ -7,7 +7,7 @@ import { common } from '@kit.AbilityKit'
 import { FileUtils } from '../utils/FileUtils'
 import { PhotoPickerUtils } from '../utils/PhotoPickerUtils'
 
-private async selectImages(): Promise<void> {
+private async selectImages() {
   const uris: string[] = await PhotoPickerUtils.selectImage(9)
   if (uris.length === 0) {
     return
@@ -15,14 +15,14 @@ private async selectImages(): Promise<void> {
   this.imageList = uris
 }
 
-private async selectVideo(): Promise<void> {
+private async selectVideo() {
   const uris: string[] = await PhotoPickerUtils.selectVideo(1)
   if (uris.length > 0) {
     this.videoUri = uris[0]
   }
 }
 
-private async selectAudio(): Promise<void> {
+private async selectAudio() {
   const uris: string[] = await PhotoPickerUtils.selectAudio()
   if (uris.length > 0) {
     this.audioUri = uris[0]

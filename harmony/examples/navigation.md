@@ -45,17 +45,17 @@ export struct DetailPage {
           titleBarAttribute: {
             backShow: true,
             title: '详情',
-            backCallback: (): void => {
+            backCallback: () => {
               this.pathStack?.pop()
             }
           }
         }).margin({ top: this.getUIContext().px2vp(globalThis.statusHeight) })
-        
+
         Text('详情内容')
       }
     }
     .hideTitleBar(true)
-    .onReady((context: NavDestinationContext): void => {
+    .onReady((context: NavDestinationContext) => {
       this.pathStack = context.pathStack
     })
   }
@@ -89,7 +89,7 @@ private openEditor(): void {
     param: {
       'mode': 'edit'
     } as Record<string, Object>,
-    onPop: (popInfo: PopInfo): void => {
+    onPop: (popInfo: PopInfo) => {
       const result: SaveResult = popInfo.result as SaveResult
       if (result.saved) {
         this.refresh()
@@ -99,4 +99,4 @@ private openEditor(): void {
 }
 ```
 
-返回当前页：`this.pathStack?.pop()`；返回结果：`this.pathStack?.pop(result)`。`Provider` 与 `Consumer` 的别名必须一致。
+返回当前页：`this.pathStack?.pop()`；返回结果：`this.pathStack?.pop(result)`。使用 `@Provider()` 和 `@Consumer()` 时不设置别名。

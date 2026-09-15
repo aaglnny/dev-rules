@@ -25,7 +25,7 @@ export struct ArticleListPage {
           titleBarAttribute: {
             backShow: true,
             title: this.pageTitle,
-            backCallback: (): void => {
+            backCallback: () => {
               this.pathStack?.pop()
             }
           }
@@ -41,7 +41,7 @@ export struct ArticleListPage {
       .height(CommonConstants.COMPONENT_PROPORTION_100)
     }
     .hideTitleBar(true)
-    .onReady((context: NavDestinationContext): void => {
+    .onReady((context: NavDestinationContext) => {
       this.pathStack = context.pathStack
       const param: Record<string, Object> = context.pathInfo.param as Record<string, Object>
       this.pageTitle = param['title'] as string
@@ -53,7 +53,7 @@ export struct ArticleListPage {
   @Builder
   private buildList(): void {
     List() {
-      ForEach(this.list, (item: ArticleModel): void => {
+      ForEach(this.list, (item: ArticleModel) => {
         ListItem() {
           this.buildListItem(item)
         }
@@ -69,7 +69,7 @@ export struct ArticleListPage {
     Text(item.title)
       .fontSize(14)
       .width(CommonConstants.COMPONENT_PROPORTION_100)
-      .onClick((): void => {
+      .onClick(() => {
         this.openDetail(item)
       })
   }
@@ -90,8 +90,8 @@ export struct ArticleListPage {
 
   private loadData(): void {
     const table = RdbTableImplGlobal.getInstance().getArticleTable()
-    table?.getRdbStore((): void => {
-      table.queryByKind(this.kind, (result: ArticleModel[]): void => {
+    table?.getRdbStore(() => {
+      table.queryByKind(this.kind, (result: ArticleModel[]) => {
         this.list = result
       })
     })

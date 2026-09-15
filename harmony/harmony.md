@@ -72,9 +72,3 @@ D:\software\Huawei\DevEco Studio\plugins\openharmony\ohos-info-center-view\stati
 优先使用 `rg` 搜索 API 名称，再读取匹配文档。只有本地文档没有对应内容或需要确认最新行为时，再查华为开发者文档。
 
 重点核对：API 版本、废弃标记、参数类型、返回类型、权限、系统能力、异常码和生命周期要求。
-
-## 备份说明
-
-原始单文件规范已备份到：
-
-`E:\rules\harmony\backup\harmony-20260912.md`

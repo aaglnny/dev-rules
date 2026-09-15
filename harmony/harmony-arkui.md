@@ -9,7 +9,7 @@
 - 新页面和普通子组件统一使用 `@ComponentV2`。
 - 页面使用 `@Entry` 或声明式路由导出的 Builder 入口，具体形式沿用当前项目。
 - 页面内部状态使用 `@Local`，父组件传入的只读参数使用 `@Param`。
-- 跨层级共享使用 `@Provider` 和 `@Consumer`，二者使用相同别名并提供符合业务的默认值。
+- 跨层级共享使用无参的 `@Provider()` 和 `@Consumer()`，不设置别名；共享成员提供明确类型和符合业务的默认值。
 - 子组件向父组件回传事件使用 `@Event`；简单且项目已有稳定普通回调写法时沿用现状。
 - `@CustomDialog` 仍按 V1 组件约束使用 `@State`，读取 [examples/custom-dialog.md](examples/custom-dialog.md)。
 
@@ -17,9 +17,14 @@
 
 - `@Local` 数组增加、删除、排序或替换元素后，优先重新赋值新数组触发刷新。
 - 深层对象需要细粒度观察时，按当前 SDK 文档使用 `@ObservedV2` 和 `@Trace`。
-- `@Param`、`@Provider` 和 `@Consumer` 提供明确类型和默认值。
+- `@Param`、`@Provider()` 和 `@Consumer()` 提供明确类型和默认值。
 - 共享状态只上提到实际需要的最近公共祖先，不建立无边界全局状态。
 - 页面需要响应统一刷新信号时使用当前项目已有监听方式，不重复建立全局通知机制。
+
+```typescript
+@Provider() refreshNetworkData: number = 0
+@Consumer() refreshNetworkData: number = 0
+```
 
 完整示例读取 [examples/state-v2.md](examples/state-v2.md)。
 
@@ -33,7 +38,7 @@
 - 同一 UI 被多处复用、拥有独立状态或事件、或者当前页面已明显过长时再抽组件。
 - Builder 只负责 UI 表达和轻量回调，不直接执行数据库、网络或复杂业务。
 - `@ComponentV2` 的 `@Event`、`@Param` 和业务成员不得命名为 `onClick`、`onTouch` 等基类或 `CommonAttribute` 已占用的事件方法；使用 `onItemClick`、`handleClick` 等业务语义名称。
-- 组件内部的点击手势仍使用 `.onClick((): void => {})`；该链式 API 与组件成员回调名称分开处理。
+- 组件内部的点击手势仍使用 `.onClick(() => {})`；该链式 API 与组件成员回调名称分开处理。
 
 ## 声明式路由
 
@@ -41,7 +46,7 @@
 - 普通跳转优先使用 `this.pathStack?.pushPath({ name, param })`。
 - 需要处理返回结果时统一使用 `this.pathStack?.pushPath({ name, param, onPop })`，通过 `onPop` 接收目标页面返回的数据。
 - 返回使用 `this.pathStack?.pop()`；需要回传结果时使用 `this.pathStack?.pop(result)`。
-- `@Provider('pathStack')` 与 `@Consumer('pathStack')` 使用相同别名。
+- `@Provider()` 与 `@Consumer()` 不设置别名，直接按成员名称提供和消费共享状态。
 - 页面内的 `pathStack` 声明为 `NavPathStack | undefined`，初始值为 `undefined`，并在 `NavDestination.onReady` 中赋值为 `context.pathStack`。
 - 路由名从 `BuilderNameConstants` 读取，`param` 统一使用对象字面量并断言为 `Record<string, Object>`；是否抽取模型由项目自行判断。
 
@@ -54,15 +59,20 @@
 - 顶部存在 Tab、搜索栏或其他复杂结构时，沿用当前项目对应页面写法。
 - 页面使用自定义标题栏时隐藏 `NavDestination` 默认标题栏。
 
-## ForEach 与列表
+## 列表、网格与瀑布流
 
 - `ForEach` 必须提供稳定且唯一的 `keyGenerator`。
 - 不使用数组下标作为可增删、可排序业务列表的长期 key。
+- 普通单列或单行列表使用 `List` 和 `ListItem`。
+- 多列且列表项高度不一致的瀑布流统一使用 `WaterFlow` 和 `FlowItem`。
+- 禁止使用两个或多个 `List`、`Column`，或按奇偶下标拆分数据来模拟瀑布流，避免产生独立滚动容器、滚动不同步、数据顺序异常和复用性能问题。
+- 固定行列且列表项尺寸一致的布局使用 `Grid`，不使用 `WaterFlow`。
+- `List`、`Grid` 和 `WaterFlow` 中的数据项都必须使用稳定且唯一的 key。
 - `LazyForEach` 使用项目已有 `LazyDataSource` 或 `LazyDataSourceV2`，完整结构读取 [examples/lazy-data-source.md](examples/lazy-data-source.md)。
 - 列表为空时显示明确空状态。
 
 ```typescript
-ForEach(this.list, (item: DataModel): void => {
+ForEach(this.list, (item: DataModel) => {
   Text(item.title)
 }, (item: DataModel): string => item.id.toString())
 ```
@@ -91,7 +101,7 @@ ForEach(this.list, (item: DataModel): void => {
 ## 检查清单
 
 - [ ] V2 组件使用了正确的状态装饰器。
-- [ ] `@Provider` 与 `@Consumer` 的别名一致并有默认值。
+- [ ] `@Provider()` 与 `@Consumer()` 未设置别名，类型和默认值明确。
 - [ ] `@Local` 没有作为普通方法参数传入 `@Builder`。
 - [ ] 需要独立状态、独立生命周期或复杂交互的区域已使用 `@ComponentV2`，简单 UI 复用才使用 `@Builder`。
 - [ ] `ForEach` 有稳定唯一 key。

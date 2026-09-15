@@ -22,11 +22,11 @@ export struct StatePage {
 
   build(): void {
     Column() {
-      ForEach(this.list, (item: ListItem): void => {
+      ForEach(this.list, (item: ListItem) => {
         ItemCard({
           title: item.title,
           selected: this.selectedId === item.id,
-          onItemClick: (): void => this.select(item.id)
+          onItemClick: () => this.select(item.id)
         })
       }, (item: ListItem): string => item.id.toString())
     }

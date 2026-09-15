@@ -127,15 +127,14 @@ for (let index: number = 0; index < resultSet.rowCount; index++) {
 ```typescript
 @ComponentV2
 export struct ArticleListPage {
-  @Local articleList: ArticleModel[] = []
+  @Local list: ArticleModel[] = []
   @Local kind: string = ''
-  @Local keyword: string = ''
 
   private loadData(): void {
-    const articleTable = RdbTableImplGlobal.getInstance().getArticleTable()
-    articleTable.getRdbStore((): void => {
-      articleTable.queryByKind(this.kind, (result: ArticleModel[]): void => {
-        this.articleList = result
+    const table = RdbTableImplGlobal.getInstance().getArticleTable()
+    table?.getRdbStore(() => {
+      table.queryByKind(this.kind, (result: ArticleModel[]) => {
+        this.list = result
       })
     })
   }

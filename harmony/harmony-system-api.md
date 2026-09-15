@@ -43,7 +43,7 @@ VtbLogger.error(TAG, `保存失败: ${JSON.stringify(error)}`)
 
 ## 异步与错误处理
 
-- 网络、文件、数据库、权限和系统 API 使用 `async/await` 时明确返回 `Promise<T>`。
+- 网络、文件、数据库、权限和系统 API 使用 `async/await` 时，有返回结果则明确声明 `Promise<T>`；没有返回结果时可以省略 `Promise<void>`。
 - `try-catch` 只包住可能失败的外部操作；内部可控逻辑不层层捕获。
 - 异常记录使用 `VtbLogger.error`，并恢复 Loading、按钮状态或已打开资源。
 - 异常不能静默转换为成功结果。
@@ -96,7 +96,7 @@ VtbLogger.error(TAG, `保存失败: ${JSON.stringify(error)}`)
 - 布尔字段与数据库整数列转换统一，例如 `false/true` 对应 `0/1`，不要在页面散落转换逻辑。
 - 可空主键用于区分新建和已有数据：新建时不写入无效主键，更新和删除前必须确认主键有效。
 - 数据库异常只在数据库边界捕获并交给统一日志或回调处理，不在页面中层层包裹 `try-catch`。
-- 修改表结构前先读取目标项目当前数据库版本、迁移策略和已有表实现，不自行猜测；需要升级时明确处理版本和迁移。
+- 开发阶段无需考虑数据库版本升级、表结构迁移和历史数据兼容；只有发布版本需要兼容已有用户数据时，才根据目标项目实际迁移策略处理。
 - `ArticleListPage -> RdbTableImplGlobal -> ArticleTable -> Rdb -> RdbCommon` 是文章数据库调用链；文章类 Model、Table 和列表页的完整分层示例见 [examples/database-rdb.md](examples/database-rdb.md)。
 
 ## emitter 事件

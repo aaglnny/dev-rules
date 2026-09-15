@@ -16,11 +16,13 @@ export struct ConfirmDialog {
       Text(this.message)
       Row() {
         Button('取消')
-          .onClick((): void => this.controller.close())
+          .onClick(() => {
+            this.controller?.close()
+          })
         Button('确定')
-          .onClick((): void => {
+          .onClick(() => {
             this.onConfirm?.()
-            this.controller.close()
+            this.controller?.close()
           })
       }
     }

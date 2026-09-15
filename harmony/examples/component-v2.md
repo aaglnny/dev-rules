@@ -14,7 +14,7 @@ export struct ItemCard {
       Text(this.title)
         .fontColor(this.selected ? $r('app.color.mainPage_selected') : $r('app.color.mainPage_normal'))
     }
-    .onClick((): void => {
+    .onClick(() => {
       this.onItemClick()
     })
   }

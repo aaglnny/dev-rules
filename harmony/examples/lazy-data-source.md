@@ -29,7 +29,7 @@ export default class LazyDataSource<T> implements IDataSource {
 
   pushArrayData(data: T[]): void {
     this.dataArray = data
-    this.listeners.forEach((listener: DataChangeListener): void => {
+    this.listeners.forEach((listener: DataChangeListener) => {
       listener.onDataReloaded()
     })
   }
