@@ -28,7 +28,7 @@
 |---|---|
 | 新建页面或页面壳 | `E:\rules\harmony\examples\page-v2.md` |
 | 新建 V2 子组件或交互组件 | `E:\rules\harmony\examples\component-v2.md` |
-| 声明式路由、页面跳转、结果回传 | `E:\rules\harmony\examples\navigation.md` |
+| 声明式路由、页面跳转、返回刷新通知、结果回传 | `E:\rules\harmony\examples\navigation.md` |
 | 状态管理 V2、列表刷新 | `E:\rules\harmony\examples\state-v2.md` |
 | LazyForEach 数据源 | `E:\rules\harmony\examples\lazy-data-source.md` |
 | 自定义弹窗 | `E:\rules\harmony\examples\custom-dialog.md` |

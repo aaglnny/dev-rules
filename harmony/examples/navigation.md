@@ -62,7 +62,7 @@ export struct DetailPage {
 }
 ```
 
-## 普通跳转与结果回传
+## 普通跳转、刷新通知与结果回传
 
 ```typescript
 private openDetail(id: number, title: string): void {
@@ -76,7 +76,32 @@ private openDetail(id: number, title: string): void {
 }
 ```
 
-需要回传结果时统一使用带 `onPop` 的 `this.pathStack?.pushPath({ name, param, onPop })`。普通跳转不增加额外回调包装。
+普通返回使用 `this.pathStack?.pop()`，不会触发跳转页面注册的 `onPop`。系统侧滑返回不携带结果，同样不能依赖 `onPop` 通知上一个页面。
+
+只需要通知上一个页面刷新、不需要回传业务数据时，上一个页面在跳转时注册 `onPop`，收到回调后直接刷新，不读取 `popInfo.result`：
+
+```typescript
+private openEditor(): void {
+  this.pathStack?.pushPath({
+    name: BuilderNameConstants.EDIT_PAGE,
+    param: {} as Record<string, Object>,
+    onPop: (_popInfo: PopInfo) => {
+      this.refresh()
+    }
+  })
+}
+```
+
+目标页面完成操作后，使用固定标记触发 `onPop`：
+
+```typescript
+private save(): void {
+  // 保存成功后通知上一个页面刷新
+  this.pathStack?.pop('update')
+}
+```
+
+需要回传业务数据时，上一个页面通过 `popInfo.result` 读取结果：
 
 ```typescript
 interface SaveResult {
@@ -99,4 +124,4 @@ private openEditor(): void {
 }
 ```
 
-返回当前页：`this.pathStack?.pop()`；返回结果：`this.pathStack?.pop(result)`。使用 `@Provider()` 和 `@Consumer()` 时不设置别名。
+目标页面使用 `this.pathStack?.pop(result)` 返回业务结果。使用 `@Provider()` 和 `@Consumer()` 时不设置别名。

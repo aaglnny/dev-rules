@@ -12,6 +12,13 @@
 - 只修改当前需求涉及的文件，不顺手重构、重命名或格式化无关代码。
 - 不为未来可能出现的需求提前引入框架、目录、基类或扩展点。
 
+## 迁移与改造
+
+- 迁移功能时优先直接迁移原文件，保留原有结构和实现。
+- 不为了遵循开发规范或业务适配修改原文件。
+- 仅在迁移导致编译、运行或必要依赖无法正常工作时，修改相关内容。
+- 不修改与当前迁移无关的文件。
+
 ## 开发流程
 
 - 开始设计或编码前，确认项目入口、页面流向、数据来源、路由方式、已有公共能力和相关 SDK API。
@@ -86,7 +93,7 @@
 - 路由协议统一为 `{moduleName}://{PageName}`。
 - 声明式路由在 `module.json5` 配置 `routerMap`，并在 `route_map.json` 中保持 `name`、`pageSourceFile`、`buildFunction` 一致。
 - 新增页面时依次补充 Builder、路由常量、`route_map.json` 和跳转入口。
-- 普通跳转、参数传递和结果回传读取 [examples/navigation.md](examples/navigation.md)。
+- 普通跳转、参数传递、返回刷新通知和结果回传读取 [examples/navigation.md](examples/navigation.md)。
 
 ## 公共库与统一出口
 

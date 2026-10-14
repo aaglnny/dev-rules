@@ -44,8 +44,10 @@
 
 - 主框架内部统一使用 `NavPathStack`。
 - 普通跳转优先使用 `this.pathStack?.pushPath({ name, param })`。
-- 需要处理返回结果时统一使用 `this.pathStack?.pushPath({ name, param, onPop })`，通过 `onPop` 接收目标页面返回的数据。
-- 返回使用 `this.pathStack?.pop()`；需要回传结果时使用 `this.pathStack?.pop(result)`。
+- `onPop` 只有在目标页面调用 `pop(result)` 并携带结果参数时才会触发；普通 `pop()` 和系统侧滑返回不能依赖 `onPop` 通知上一个页面。
+- 只需要通知上一个页面刷新、不需要回传业务数据时，上一个页面在 `pushPath()` 中注册 `onPop`，目标页面返回时统一调用 `this.pathStack?.pop('update')`；上一个页面收到 `onPop` 后直接刷新，不读取 `popInfo.result`。
+- 需要回传业务数据时，上一个页面在 `pushPath()` 中注册 `onPop`，目标页面调用 `this.pathStack?.pop(result)`，上一个页面通过 `popInfo.result` 读取结果。
+- 不需要通知或回传结果时使用 `this.pathStack?.pop()`。
 - `@Provider()` 与 `@Consumer()` 不设置别名，直接按成员名称提供和消费共享状态。
 - 页面内的 `pathStack` 声明为 `NavPathStack | undefined`，初始值为 `undefined`，并在 `NavDestination.onReady` 中赋值为 `context.pathStack`。
 - 路由名从 `BuilderNameConstants` 读取，`param` 统一使用对象字面量并断言为 `Record<string, Object>`；是否抽取模型由项目自行判断。
@@ -97,6 +99,9 @@ ForEach(this.list, (item: DataModel) => {
 - 颜色、字号、常用尺寸优先使用资源引用；简单局部间距可以沿用项目现有数字写法。
 - 图标通常固定一个方向，另一方向使用 `'auto'`。
 - 不因整理代码把中文文本转换为 Unicode 转义。
+- 页面根布局及其最外层内容容器，可以设置上下 `padding`，用于安全区适配和页面上下留白。
+- 禁止为了统一管理页面左右间距，在上述容器设置左右 `padding`，也不得使用 `padding(数值)` 等写法间接设置左右内边距。
+- 左右间距由具体内容区域、卡片或列表项按设计分别设置，不得额外增加统一包裹层规避此规则。
 
 ## 检查清单
 
@@ -108,3 +113,4 @@ ForEach(this.list, (item: DataModel) => {
 - [ ] 路由常量、Builder 和 `route_map.json` 一致。
 - [ ] 未新增废弃的全局上下文、Toast 或单位转换 API。
 - [ ] `@ComponentV2` 没有使用 `onClick` 等基类事件方法名称声明业务成员。
+- [ ] 根布局及最外层内容容器未通过左右 `padding` 统一控制页面横向间距。
